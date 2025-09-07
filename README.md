@@ -1,3 +1,3 @@
 # fastapi-url-shortener
 
-poetry run fastapi dev
+poetry run fastapi dev --reload
