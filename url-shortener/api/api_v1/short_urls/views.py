@@ -10,7 +10,10 @@ from fastapi import (
 from annotated_types import Len
 from pydantic import AnyHttpUrl
 
-from schemas.short_url import ShortUrl
+from schemas.short_url import (
+    ShortUrl,
+    ShortUrlCreate,
+)
 
 from .crud import SHORT_URLS
 from .dependencies import (
@@ -50,14 +53,8 @@ def read_short_url_details(
     status_code=status.HTTP_201_CREATED,
 )
 def create_short_url(
-    target_url: Annotated[AnyHttpUrl, Form()],
-    slug: Annotated[
-        str,
-        Len(min_length=3, max_length=10),
-        Form(),
-    ],
+    short_url_create: ShortUrlCreate,
 ):
     return ShortUrl(
-        target_url=target_url,
-        slug=slug,
+        **short_url_create.model_dump(),
     )
