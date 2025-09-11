@@ -4,18 +4,14 @@ from fastapi import (
     Depends,
     APIRouter,
     status,
-    Form,
 )
-
-from annotated_types import Len
-from pydantic import AnyHttpUrl
 
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
 )
 
-from .crud import SHORT_URLS
+from .crud import storage
 from .dependencies import (
     prefetch_short_url,
 )
@@ -30,8 +26,8 @@ router = APIRouter(
     "/",
     response_model=list[ShortUrl],
 )
-def read_short_urls_list():
-    return SHORT_URLS
+def read_short_urls_list() -> list[ShortUrl]:
+    return storage.get()
 
 
 @router.get(
@@ -54,7 +50,5 @@ def read_short_url_details(
 )
 def create_short_url(
     short_url_create: ShortUrlCreate,
-):
-    return ShortUrl(
-        **short_url_create.model_dump(),
-    )
+) -> ShortUrl:
+    return storage.create(short_url_create)
