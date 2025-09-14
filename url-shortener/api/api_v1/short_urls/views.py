@@ -5,6 +5,7 @@ from fastapi import (
     APIRouter,
     status,
 )
+from httpx import delete
 
 from schemas.short_url import (
     ShortUrl,
@@ -52,3 +53,16 @@ def create_short_url(
     short_url_create: ShortUrlCreate,
 ) -> ShortUrl:
     return storage.create(short_url_create)
+
+
+@router.delete(
+    "/{slug}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_short_url(
+    url: Annotated[
+        ShortUrl,
+        Depends(prefetch_short_url),
+    ],
+) -> None:
+    storage.delete(short_url=url)
