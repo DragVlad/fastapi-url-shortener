@@ -4,13 +4,15 @@ from typing import Annotated
 
 from annotated_types import Len, MaxLen
 
+DescriptionString = Annotated[
+    str,
+    MaxLen(200),
+]
+
 
 class ShortUrlBase(BaseModel):
     target_url: AnyHttpUrl
-    description: Annotated[
-        str,
-        MaxLen(200),
-    ] = ""
+    description: DescriptionString = ""
 
 
 class ShortUrl(ShortUrlBase):
@@ -25,7 +27,9 @@ class ShortUrlCreate(ShortUrlBase):
 
 
 class ShortUrlUpdate(ShortUrlBase):
-    description: Annotated[
-        str,
-        MaxLen(200),
-    ]
+    description: DescriptionString
+
+
+class ShortUrlPartialUpdate(ShortUrlBase):
+    target_url: AnyHttpUrl | None = None
+    description: DescriptionString | None = None
