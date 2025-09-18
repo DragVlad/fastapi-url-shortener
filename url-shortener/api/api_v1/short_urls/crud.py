@@ -3,6 +3,7 @@ from pydantic import BaseModel, AnyHttpUrl
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
+    ShortUrlPartialUpdate,
     ShortUrlUpdate,
 )
 
@@ -35,6 +36,16 @@ class ShortUrlsStorage(BaseModel):
         short_url_in: ShortUrlUpdate,
     ) -> ShortUrl:
         for field_name, value in short_url_in:
+            setattr(short_url, field_name, value)
+
+        return short_url
+
+    def update_partial(
+        self,
+        short_url: ShortUrl,
+        short_url_in: ShortUrlPartialUpdate,
+    ):
+        for field_name, value in short_url_in.model_dump(exclude_unset=True).items():
             setattr(short_url, field_name, value)
 
         return short_url
