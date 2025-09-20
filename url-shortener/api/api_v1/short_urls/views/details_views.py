@@ -9,6 +9,7 @@ from schemas.short_url import (
     ShortUrl,
     ShortUrlPartialUpdate,
     ShortUrlUpdate,
+    ShortUrlRead,
 )
 
 router = APIRouter(
@@ -35,7 +36,7 @@ ShortUrlBySlug = Annotated[
 
 @router.get(
     "/",
-    response_model=ShortUrl,
+    response_model=ShortUrlRead,
 )
 def read_short_url_details(
     url: ShortUrlBySlug,
@@ -55,7 +56,7 @@ def delete_short_url(
 
 @router.put(
     "/",
-    response_model=ShortUrl,
+    response_model=ShortUrlRead,
 )
 def update_short_url_details(
     url: ShortUrlBySlug,
@@ -69,7 +70,7 @@ def update_short_url_details(
 
 @router.patch(
     "/",
-    response_model=ShortUrl,
+    response_model=ShortUrlRead,
 )
 def update_short_url_details_partial(
     url: ShortUrlBySlug,
