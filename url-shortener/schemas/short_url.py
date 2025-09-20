@@ -33,3 +33,7 @@ class ShortUrlUpdate(ShortUrlBase):
 class ShortUrlPartialUpdate(ShortUrlBase):
     target_url: AnyHttpUrl | None = None
     description: DescriptionString | None = None
+
+
+class ShortUrlRead(ShortUrlBase):
+    slug: str
