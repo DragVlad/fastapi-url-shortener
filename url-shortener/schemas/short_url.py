@@ -17,6 +17,7 @@ class ShortUrlBase(BaseModel):
 
 class ShortUrl(ShortUrlBase):
     slug: str
+    visits: int = 42
 
 
 class ShortUrlCreate(ShortUrlBase):
