@@ -20,6 +20,18 @@ log = logging.getLogger(__name__)
 class ShortUrlsStorage(BaseModel):
     slug_to_short_url: dict[str, ShortUrl] = {}
 
+    def init_storage_from_state(self) -> None:
+        try:
+            data = ShortUrlsStorage.from_state()
+        except ValidationError:
+            self.save_state()
+            log.warning("Rewritten storage file due to validation error.")
+
+        self.slug_to_short_url.update(
+            data.slug_to_short_url,
+        )
+        log.warning("Recovered data from storage file.")
+
     def save_state(self) -> None:
         SHORT_URLS_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=2))
         log.info("Saved short urls to storage file.")
@@ -73,10 +85,4 @@ class ShortUrlsStorage(BaseModel):
         return short_url
 
 
-try:
-    storage = ShortUrlsStorage.from_state()
-    log.warning("Recovered data from storage file.")
-except ValidationError:
-    storage = ShortUrlsStorage()
-    storage.save_state()
-    log.warning("Rewritten storage file due to validation error.")
+storage = ShortUrlsStorage()
