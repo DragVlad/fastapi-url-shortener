@@ -1,7 +1,7 @@
 from fastapi import (
     APIRouter,
-    BackgroundTasks,
     status,
+    Depends,
 )
 
 from schemas.short_url import (
@@ -11,10 +11,12 @@ from schemas.short_url import (
 )
 
 from api.api_v1.short_urls.crud import storage
+from api.api_v1.short_urls.dependencies import save_storage_state
 
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
+    dependencies=[Depends(save_storage_state)],
 )
 
 
@@ -33,7 +35,5 @@ def read_short_urls_list() -> list[ShortUrl]:
 )
 def create_short_url(
     short_url_create: ShortUrlCreate,
-    background_tasks: BackgroundTasks,
 ) -> ShortUrl:
-    background_tasks.add_task(storage.save_state)
     return storage.create(short_url_create)
