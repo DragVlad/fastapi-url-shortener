@@ -11,12 +11,30 @@ from schemas.short_url import (
 )
 
 from api.api_v1.short_urls.crud import storage
-from api.api_v1.short_urls.dependencies import save_storage_state
+from api.api_v1.short_urls.dependencies import (
+    save_storage_state,
+    api_token_required,
+)
 
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
-    dependencies=[Depends(save_storage_state)],
+    dependencies=[
+        Depends(save_storage_state),
+        Depends(api_token_required),
+    ],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Unauthenticated. Only for unsafe methods.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Invalid API token",
+                    },
+                },
+            },
+        },
+    },
 )
 
 
