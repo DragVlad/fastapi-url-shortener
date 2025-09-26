@@ -3,6 +3,7 @@ import logging
 from fastapi import (
     HTTPException,
     BackgroundTasks,
+    Request,
 )
 from starlette import status
 
@@ -11,6 +12,16 @@ from schemas.short_url import ShortUrl
 from .crud import storage
 
 log = logging.getLogger(__name__)
+
+
+UNSAVE_METHODS = frozenset(
+    {
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+    }
+)
 
 
 def prefetch_short_url(
@@ -27,8 +38,10 @@ def prefetch_short_url(
 
 
 def save_storage_state(
+    request: Request,
     background_tasks: BackgroundTasks,
 ):
     yield
-    log.info("Add background task to save storage")
-    background_tasks.add_task(storage.save_state)
+    if request.method in UNSAVE_METHODS:
+        log.info("Add background task to save storage")
+        background_tasks.add_task(storage.save_state)
