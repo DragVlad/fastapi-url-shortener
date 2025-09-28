@@ -14,6 +14,7 @@ from api.api_v1.short_urls.crud import storage
 from api.api_v1.short_urls.dependencies import (
     save_storage_state,
     api_token_required,
+    user_basic_auth_required,
 )
 
 router = APIRouter(
@@ -21,7 +22,8 @@ router = APIRouter(
     tags=["Short URLs"],
     dependencies=[
         Depends(save_storage_state),
-        Depends(api_token_required),
+        Depends(user_basic_auth_required),
+        # Depends(api_token_required),
     ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
